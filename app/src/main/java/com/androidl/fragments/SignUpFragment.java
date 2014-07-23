@@ -52,22 +52,36 @@ public class SignUpFragment extends Fragment {
 
         Savings savingone = new Savings();
         savingone.setTitle("TitleOne");
-        savingone.setIcon("http://upload.wikimedia.org/wikipedia/commons/2/28/Flag_of_Puerto_Rico.svg");
-        savings.add(savingone);
+        Bitmap icon = BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.boatsunset);
+        savingone.setIcon(icon);
 
         Savings savingtwo = new Savings();
-        savingone.setTitle("TitleTwo");
-        savingone.setIcon("http://foundtheworld.com/wp-content/uploads/2014/03/Puerto-Rico-beaches-2.jpg");
-        savings.add(savingtwo);
+        savingtwo.setTitle("TitleTwo");
+        Bitmap icontwo = BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.pr2);
+        savingtwo.setIcon(icontwo);
 
         Savings savingthree = new Savings();
-        savingone.setTitle("TitleThree");
-        savingone.setIcon("http://www.ashi.annualmeeting2012.org/sites/default/files/images/2012/PRBoat.jpg");
-        savings.add(savingthree);
+        savingthree.setTitle("TitleThree");
+        Bitmap iconthree = BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.puerto_ricco);
+        savingthree.setIcon(iconthree);
+
+        Savings savingfour = new Savings();
+        savingfour.setTitle("TitleFour");
+        Bitmap iconfour = BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.hammock);
+        savingfour.setIcon(iconfour);
 
         savings.add(savingone);
         savings.add(savingtwo);
         savings.add(savingthree);
+        savings.add(savingfour);
+        savings.add(savingone);
+        savings.add(savingtwo);
+        savings.add(savingthree);
+        savings.add(savingfour);
 
         feedAdapter = new SignUpAdapter(getActivity(), savings, R.layout.list_view);
         recyclerView.setAdapter(feedAdapter);

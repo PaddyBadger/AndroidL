@@ -42,10 +42,10 @@ public class SignUpAdapter extends RecyclerView.Adapter<SignUpAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         Savings item = savings.get(i);
         viewHolder.text.setText(item.getTitle());
-        viewHolder.image.setImageBitmap(null);
+        viewHolder.image.setImageBitmap(item.getIcon());
 
-        Picasso.with(viewHolder.image.getContext()).cancelRequest(viewHolder.image);
-        Picasso.with(viewHolder.image.getContext()).load(item.getIcon()).into(viewHolder.image);
+//        Picasso.with(viewHolder.image.getContext()).cancelRequest(viewHolder.image);
+//        Picasso.with(viewHolder.image.getContext()).load(item.getIcon()).into(viewHolder.image);
         viewHolder.itemView.setTag(item);
     }
 

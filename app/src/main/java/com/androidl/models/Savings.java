@@ -8,7 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
  */
 public class Savings {
     private String title;
-    private String icon;
+    private Bitmap icon;
 
     public void setTitle(String title)
     {
@@ -20,12 +20,12 @@ public class Savings {
         return title;
     }
 
-    public void setIcon(String icon)
+    public void setIcon(Bitmap icon)
     {
         this.icon = icon;
     }
 
-    public String getIcon()
+    public Bitmap getIcon()
     {
         return icon;
     }
