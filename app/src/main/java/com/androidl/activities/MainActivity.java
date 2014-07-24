@@ -21,7 +21,7 @@ public class MainActivity extends BaseActivity {
     {
         super.onCreate(savedInstanceState);
 
-        initViews("Where Can You Save?", R.drawable.ic_launcher, SignUpFragment.newInstance());
+        initViews("RecycleView", R.drawable.ic_launcher, SignUpFragment.newInstance());
     }
 }
 

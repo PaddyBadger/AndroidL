@@ -1,8 +1,11 @@
 package com.androidl.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v7.graphics.Palette;
+import android.support.v7.graphics.PaletteItem;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,10 +45,13 @@ public class SignUpAdapter extends RecyclerView.Adapter<SignUpAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         Savings item = savings.get(i);
         viewHolder.text.setText(item.getTitle());
-        viewHolder.image.setImageBitmap(item.getIcon());
+        Bitmap icon = item.getIcon();
+        viewHolder.image.setImageBitmap(icon);
 
-//        Picasso.with(viewHolder.image.getContext()).cancelRequest(viewHolder.image);
-//        Picasso.with(viewHolder.image.getContext()).load(item.getIcon()).into(viewHolder.image);
+        Palette p = Palette.generate(icon, 24);
+        final PaletteItem darkVibrantColor = p.getDarkVibrantColor();
+        viewHolder.text.setBackgroundColor(darkVibrantColor.getRgb());
+
         viewHolder.itemView.setTag(item);
     }
 
@@ -72,6 +78,7 @@ public class SignUpAdapter extends RecyclerView.Adapter<SignUpAdapter.ViewHolder
             super(itemView);
             image = (ImageView) itemView.findViewById(R.id.image);
             text = (TextView) itemView.findViewById(R.id.title);
+
         }
     }
 }
