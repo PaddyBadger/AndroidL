@@ -1,11 +1,7 @@
 package com.androidl.adapters;
 
-import android.app.ActivityOptions;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.v7.graphics.Palette;
 import android.support.v7.graphics.PaletteItem;
 import android.support.v7.widget.RecyclerView;
@@ -16,26 +12,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidl.R;
-import com.androidl.activities.SecondActivity;
-import com.androidl.models.Savings;
-import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.androidl.model.Child;
+import com.androidl.model.Data_;
+import com.androidl.model.Reddit;
 
 /**
  * Created by patriciaestridge on 7/21/14.
  */
 public class SignUpAdapter extends RecyclerView.Adapter<SignUpAdapter.ViewHolder> {
-    public List<Savings> savings = new ArrayList<Savings>();
     private Context context;
+    private Reddit redditData;
     private int itemLayout;
 
-    public SignUpAdapter(Context context, List<Savings> savings, int itemLayout)
+    public SignUpAdapter(Context context, Reddit redditData, int itemLayout)
     {
         super();
         this.context = context;
-        this.savings = savings;
+        this.redditData = redditData;
         this.itemLayout = itemLayout;
     }
 
@@ -45,43 +38,41 @@ public class SignUpAdapter extends RecyclerView.Adapter<SignUpAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder viewHolder, int i) {
-        Savings item = savings.get(i);
-        viewHolder.text.setText(item.getTitle());
-        Bitmap icon = item.getIcon();
-        viewHolder.image.setImageBitmap(icon);
+    public void onBindViewHolder(ViewHolder viewHolder, int i)
+    {
+        Child child = redditData.getData().getChildren().get(i);
+        Data_ data = child.getData();
 
-        Palette p = Palette.generate(icon, 24);
-        final PaletteItem darkVibrantColor = p.getDarkVibrantColor();
-        viewHolder.text.setBackgroundColor(darkVibrantColor.getRgb());
-
-        viewHolder.itemView.setTag(item);
-
-        viewHolder.image.setOnClickListener(new View.OnClickListener()
+        viewHolder.text.setText(data.getTitle());
+        ImageView imageView = viewHolder.image;
+        imageView.setImageBitmap(child.getBm());
+        Bitmap image = child.getBm();
+        if (image != null)
         {
-            @Override
-            public void onClick(View view)
-            {
-                Intent intent = new Intent(context, SecondActivity.class);
-                context.startActivity(intent);
-            }
-        });
+            Palette p = Palette.generate(image, 24);
+
+            final PaletteItem darkColor = p.getDarkVibrantColor() != null ? p.getDarkVibrantColor() : p.getDarkMutedColor();
+
+            viewHolder.text.setBackgroundColor(darkColor.getRgb());
+        }
+        viewHolder.itemView.setTag(data);
+
+//        viewHolder.image.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View view)
+//            {
+//                Intent intent = new Intent(context, SecondActivity.class);
+//                context.startActivity(intent);
+//            }
+//        });
     }
 
     @Override public int getItemCount() {
-        return savings.size();
+        return redditData.getData().getChildren().size();
     }
 
-    public void add(Savings item, int position) {
-        savings.add(position, item);
-        notifyItemInserted(position);
-    }
 
-    public void remove(Savings item) {
-        int position = savings.indexOf(item);
-        savings.remove(position);
-        notifyItemRemoved(position);
-    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView image;

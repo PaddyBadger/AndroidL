@@ -2,23 +2,26 @@ package com.androidl.fragments;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 import com.androidl.R;
 import com.androidl.adapters.SignUpAdapter;
-import com.androidl.models.Savings;
+import com.androidl.api.RestHelper;
+import com.androidl.model.Reddit;
+import com.androidl.model.Savings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.ButterKnife;
 
@@ -30,6 +33,7 @@ public class SignUpFragment extends Fragment {
     private View rootView;
     private SignUpAdapter feedAdapter;
     private RecyclerView recyclerView;
+    private RestHelper restHelper;
 
     public static SignUpFragment newInstance()
     {
@@ -38,9 +42,7 @@ public class SignUpFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
     public SignUpFragment() {}
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -82,14 +84,47 @@ public class SignUpFragment extends Fragment {
         savings.add(savingtwo);
         savings.add(savingthree);
         savings.add(savingfour);
+        restHelper = RestHelper.getInstance(getActivity());
+        try
+        {
+            new HttpRequestTask().execute().get();
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        } catch (ExecutionException e)
+        {
+            e.printStackTrace();
+        }
 
-        feedAdapter = new SignUpAdapter(getActivity(), savings, R.layout.list_view);
-        recyclerView.setAdapter(feedAdapter);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setHasFixedSize(true);
         return rootView;
     }
 
+    private static Reddit reddit;
+
+    private class HttpRequestTask extends AsyncTask<Void, Void, Reddit>
+    {
+        @Override
+        protected Reddit doInBackground(Void... params)
+        {
+            try
+            {
+                return restHelper.getPosts();
+            } catch (Exception e)
+            {
+                Log.e("MainActivity", e.getMessage(), e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Reddit reddit)
+        {
+            feedAdapter = new SignUpAdapter(getActivity(), reddit, R.layout.list_view);
+            recyclerView.setAdapter(feedAdapter);
+
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setHasFixedSize(true);
+        }
+    }
 }

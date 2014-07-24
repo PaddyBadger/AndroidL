@@ -1,4 +1,4 @@
-package com.androidl.models;
+package com.androidl.model;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
