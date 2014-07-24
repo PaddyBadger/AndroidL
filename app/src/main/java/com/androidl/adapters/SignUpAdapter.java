@@ -1,6 +1,8 @@
 package com.androidl.adapters;
 
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -14,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidl.R;
+import com.androidl.activities.SecondActivity;
 import com.androidl.models.Savings;
 import com.squareup.picasso.Picasso;
 
@@ -42,7 +45,7 @@ public class SignUpAdapter extends RecyclerView.Adapter<SignUpAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(final ViewHolder viewHolder, int i) {
         Savings item = savings.get(i);
         viewHolder.text.setText(item.getTitle());
         Bitmap icon = item.getIcon();
@@ -53,6 +56,16 @@ public class SignUpAdapter extends RecyclerView.Adapter<SignUpAdapter.ViewHolder
         viewHolder.text.setBackgroundColor(darkVibrantColor.getRgb());
 
         viewHolder.itemView.setTag(item);
+
+        viewHolder.image.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(context, SecondActivity.class);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override public int getItemCount() {
