@@ -1,6 +1,7 @@
 package com.androidl.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.graphics.Palette;
 import android.support.v7.graphics.PaletteItem;
@@ -12,9 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidl.R;
+import com.androidl.activities.MainActivity;
+import com.androidl.activities.SecondActivity;
 import com.androidl.model.Child;
 import com.androidl.model.Data_;
 import com.androidl.model.Reddit;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * Created by patriciaestridge on 7/21/14.
@@ -41,12 +46,12 @@ public class SignUpAdapter extends RecyclerView.Adapter<SignUpAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder viewHolder, int i)
     {
         Child child = redditData.getData().getChildren().get(i);
-        Data_ data = child.getData();
+        final Data_ data = child.getData();
 
         viewHolder.text.setText(data.getTitle());
         ImageView imageView = viewHolder.image;
         imageView.setImageBitmap(child.getBm());
-        Bitmap image = child.getBm();
+        final Bitmap image = child.getBm();
         if (image != null)
         {
             Palette p = Palette.generate(image, 24);
@@ -57,15 +62,18 @@ public class SignUpAdapter extends RecyclerView.Adapter<SignUpAdapter.ViewHolder
         }
         viewHolder.itemView.setTag(data);
 
-//        viewHolder.image.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View view)
-//            {
-//                Intent intent = new Intent(context, SecondActivity.class);
-//                context.startActivity(intent);
-//            }
-//        });
+        viewHolder.image.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                MainActivity.image=image;
+                Intent intent = new Intent(context, SecondActivity.class);
+
+                intent.putExtra("title", data.getTitle());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override public int getItemCount() {
