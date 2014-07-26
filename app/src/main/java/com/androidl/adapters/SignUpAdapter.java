@@ -1,8 +1,10 @@
 package com.androidl.adapters;
 
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.support.v7.graphics.Palette;
+import android.support.v7.graphics.PaletteItem;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,25 +13,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidl.R;
-import com.androidl.models.Savings;
-import com.squareup.picasso.Picasso;
+import com.androidl.activities.MainActivity;
+import com.androidl.activities.SecondActivity;
+import com.androidl.model.Child;
+import com.androidl.model.Data_;
+import com.androidl.model.Reddit;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.ByteArrayOutputStream;
 
 /**
  * Created by patriciaestridge on 7/21/14.
  */
 public class SignUpAdapter extends RecyclerView.Adapter<SignUpAdapter.ViewHolder> {
-    public List<Savings> savings = new ArrayList<Savings>();
     private Context context;
+    private Reddit redditData;
     private int itemLayout;
 
-    public SignUpAdapter(Context context, List<Savings> savings, int itemLayout)
+    public SignUpAdapter(Context context, Reddit redditData, int itemLayout)
     {
         super();
         this.context = context;
-        this.savings = savings;
+        this.redditData = redditData;
         this.itemLayout = itemLayout;
     }
 
@@ -39,30 +43,44 @@ public class SignUpAdapter extends RecyclerView.Adapter<SignUpAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        Savings item = savings.get(i);
-        viewHolder.text.setText(item.getTitle());
-        viewHolder.image.setImageBitmap(null);
+    public void onBindViewHolder(ViewHolder viewHolder, int i)
+    {
+        Child child = redditData.getData().getChildren().get(i);
+        final Data_ data = child.getData();
 
-        Picasso.with(viewHolder.image.getContext()).cancelRequest(viewHolder.image);
-        Picasso.with(viewHolder.image.getContext()).load(item.getIcon()).into(viewHolder.image);
-        viewHolder.itemView.setTag(item);
+        viewHolder.text.setText(data.getTitle());
+        ImageView imageView = viewHolder.image;
+        imageView.setImageBitmap(child.getBm());
+        final Bitmap image = child.getBm();
+        if (image != null)
+        {
+            Palette p = Palette.generate(image, 24);
+
+            final PaletteItem darkColor = p.getDarkVibrantColor() != null ? p.getDarkVibrantColor() : p.getDarkMutedColor();
+
+            viewHolder.text.setBackgroundColor(darkColor.getRgb());
+        }
+        viewHolder.itemView.setTag(data);
+
+        viewHolder.image.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                MainActivity.image=image;
+                Intent intent = new Intent(context, SecondActivity.class);
+
+                intent.putExtra("title", data.getTitle());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override public int getItemCount() {
-        return savings.size();
+        return redditData.getData().getChildren().size();
     }
 
-    public void add(Savings item, int position) {
-        savings.add(position, item);
-        notifyItemInserted(position);
-    }
 
-    public void remove(Savings item) {
-        int position = savings.indexOf(item);
-        savings.remove(position);
-        notifyItemRemoved(position);
-    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView image;
@@ -72,6 +90,7 @@ public class SignUpAdapter extends RecyclerView.Adapter<SignUpAdapter.ViewHolder
             super(itemView);
             image = (ImageView) itemView.findViewById(R.id.image);
             text = (TextView) itemView.findViewById(R.id.title);
+
         }
     }
 }
